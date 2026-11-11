@@ -450,9 +450,72 @@ Byliny
                 ["7.52", "Višňa",      CAT.STROMY ],
                 ["7.62", "Moruša",     CAT.STROMY ],
                 ["7.63", "Mäta",       CAT.BYLINKY],
+                ["7.67", "Lieska",     CAT.STROMY ],
+                ["7.71", "Tymian",     CAT.BYLINKY],
+                ["7.73", "Baza",       CAT.BYLINKY],
+                ["7.79", "Gaštan",     CAT.STROMY ],
             ]),
         ];
 
+        function addCurrentFloor7Rooms() {
+            const svg = document.querySelector('#svgContainer7 svg');
+            if (!svg || svg.querySelector('#currentFloor7Rooms')) return;
+
+            const ns = 'http://www.w3.org/2000/svg';
+            const group = document.createElementNS(ns, 'g');
+            group.setAttribute('id', 'currentFloor7Rooms');
+
+            const updates = [
+                { number: '7.79', name: 'Gaštan', category: CAT.STROMY, center: [650, 210], rect: [578, 162, 128, 101], label: [550, 58], line: [570, 68, 650, 210] },
+                { number: '7.73', name: 'Baza', category: CAT.BYLINKY, center: [383, 365], rect: [357, 328, 53, 69], label: [264, 147], line: [275, 155, 383, 365] },
+                { number: '7.71', name: 'Tymian', category: CAT.BYLINKY, center: [233, 336], rect: [202, 320, 62, 39], label: [36, 313], line: [112, 318, 233, 336] },
+                { number: '7.67', name: 'Lieska', category: CAT.STROMY, center: [346, 426], rect: [281, 395, 128, 62], label: [14, 500], line: [115, 492, 346, 426] }
+            ];
+
+            for (const room of updates) {
+                const [x, y, width, height] = room.rect;
+                const fill = room.category === CAT.STROMY ? 'rgba(28,197,118,0.5)' : 'rgba(234,221,158,0.5)';
+                const area = document.createElementNS(ns, 'rect');
+                area.setAttribute('x', x);
+                area.setAttribute('y', y);
+                area.setAttribute('width', width);
+                area.setAttribute('height', height);
+                area.setAttribute('fill', fill);
+                group.appendChild(area);
+
+                const [x1, y1, x2, y2] = room.line;
+                const leader = document.createElementNS(ns, 'line');
+                leader.setAttribute('x1', x1);
+                leader.setAttribute('y1', y1);
+                leader.setAttribute('x2', x2);
+                leader.setAttribute('y2', y2);
+                leader.setAttribute('stroke', '#111');
+                leader.setAttribute('stroke-width', '1.5');
+                group.appendChild(leader);
+
+                const target = document.createElementNS(ns, 'text');
+                target.setAttribute('x', room.center[0]);
+                target.setAttribute('y', room.center[1]);
+                target.setAttribute('font-size', '20');
+                target.setAttribute('opacity', '0');
+                target.setAttribute('pointer-events', 'none');
+                target.textContent = `${room.number} ${room.name}`;
+                group.appendChild(target);
+
+                const label = document.createElementNS(ns, 'text');
+                label.setAttribute('x', room.label[0]);
+                label.setAttribute('y', room.label[1]);
+                label.setAttribute('font-family', 'Arial, sans-serif');
+                label.setAttribute('font-size', '20');
+                label.setAttribute('fill', '#111');
+                label.textContent = `${room.number} ${room.name}`;
+                group.appendChild(label);
+            }
+
+            svg.appendChild(group);
+        }
+
+        addCurrentFloor7Rooms();
         let activeIndex = -1;
         let currentFloor = 6;
         let currentTextElement = null;
