@@ -466,10 +466,10 @@ Byliny
             group.setAttribute('id', 'currentFloor7Rooms');
 
             const updates = [
-                { number: '7.79', name: 'Gaštan', category: CAT.STROMY, center: [650, 210], rect: [578, 162, 128, 101], label: [550, 58], line: [570, 68, 650, 210] },
-                { number: '7.73', name: 'Baza', category: CAT.BYLINKY, center: [383, 365], rect: [357, 328, 53, 69], label: [264, 147], line: [275, 155, 383, 365] },
-                { number: '7.71', name: 'Tymian', category: CAT.BYLINKY, center: [233, 336], rect: [202, 320, 62, 39], label: [36, 313], line: [112, 318, 233, 336] },
-                { number: '7.67', name: 'Lieska', category: CAT.STROMY, center: [346, 426], rect: [281, 395, 128, 62], label: [14, 500], line: [115, 492, 346, 426] }
+                { number: '7.79', name: 'Gaštan', category: CAT.STROMY, center: [650, 210], rect: [578, 162, 128, 101], label: [550, 58], line: [570, 68, 650, 210], furniture: { table: { type: 'rect', x: 604, y: 197, width: 80, height: 22 }, seats: [[605, 186], [619, 186], [633, 186], [647, 186], [661, 186], [675, 186], [605, 229], [619, 229], [633, 229], [647, 229], [661, 229], [675, 229], [593, 204], [690, 204]] } },
+                { number: '7.73', name: 'Baza', category: CAT.BYLINKY, center: [383, 365], rect: [357, 328, 53, 69], label: [264, 147], line: [275, 155, 383, 365], furniture: { table: { type: 'circle', cx: 383, cy: 363, r: 8 }, seats: [[371, 343], [395, 343], [383, 381]] } },
+                { number: '7.71', name: 'Tymian', category: CAT.BYLINKY, center: [233, 336], rect: [202, 320, 62, 39], label: [36, 313], line: [112, 318, 233, 336], furniture: { table: { type: 'rect', x: 223, y: 331, width: 20, height: 12 }, seats: [[208, 333], [250, 333], [229, 321]] } },
+                { number: '7.67', name: 'Lieska', category: CAT.STROMY, center: [346, 426], rect: [281, 395, 128, 62], label: [14, 500], line: [115, 492, 346, 426], furniture: { table: { type: 'rect', x: 296, y: 414, width: 98, height: 19 }, seats: [[299, 403], [315, 403], [331, 403], [347, 403], [363, 403], [379, 403], [299, 438], [315, 438], [331, 438], [347, 438], [363, 438], [379, 438], [285, 420], [398, 420]] } }
             ];
 
             for (const room of updates) {
@@ -482,6 +482,40 @@ Byliny
                 area.setAttribute('height', height);
                 area.setAttribute('fill', fill);
                 group.appendChild(area);
+
+                const furniture = document.createElementNS(ns, 'g');
+                furniture.setAttribute('class', 'room-furniture');
+                furniture.setAttribute('pointer-events', 'none');
+                const table = room.furniture.table;
+                const tableShape = document.createElementNS(ns, table.type === 'circle' ? 'circle' : 'rect');
+                if (table.type === 'circle') {
+                    tableShape.setAttribute('cx', table.cx);
+                    tableShape.setAttribute('cy', table.cy);
+                    tableShape.setAttribute('r', table.r);
+                } else {
+                    tableShape.setAttribute('x', table.x);
+                    tableShape.setAttribute('y', table.y);
+                    tableShape.setAttribute('width', table.width);
+                    tableShape.setAttribute('height', table.height);
+                }
+                tableShape.setAttribute('fill', '#fff');
+                tableShape.setAttribute('stroke', '#aeb4b8');
+                tableShape.setAttribute('stroke-width', '1.5');
+                furniture.appendChild(tableShape);
+
+                for (const [seatX, seatY] of room.furniture.seats) {
+                    const seat = document.createElementNS(ns, 'rect');
+                    seat.setAttribute('x', seatX);
+                    seat.setAttribute('y', seatY);
+                    seat.setAttribute('width', '7');
+                    seat.setAttribute('height', '6');
+                    seat.setAttribute('rx', '2');
+                    seat.setAttribute('fill', '#fff');
+                    seat.setAttribute('stroke', '#aeb4b8');
+                    seat.setAttribute('stroke-width', '1.2');
+                    furniture.appendChild(seat);
+                }
+                group.appendChild(furniture);
 
                 const [x1, y1, x2, y2] = room.line;
                 const leader = document.createElementNS(ns, 'line');
